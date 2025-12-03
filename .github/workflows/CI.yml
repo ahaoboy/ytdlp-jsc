@@ -36,7 +36,7 @@ jobs:
       - name: install
         run: |
           sudo apt update
-          sudo apt install build-essential clang libclang-dev -y
+          sudo apt install build-essential clang libclang-dev gcc-aarch64-linux-gnu g++-aarch64-linux-gnu -y
       - uses: ahaoboy/aarch64-linux-musl-cross-build@v1
         if: startsWith(matrix.platform.target, 'aarch64')
 
@@ -74,7 +74,7 @@ jobs:
       - name: install
         run: |
           sudo apt update
-          sudo apt install build-essential clang libclang-dev -y
+          sudo apt install build-essential clang libclang-dev gcc-aarch64-linux-gnu g++-aarch64-linux-gnu -y
       - uses: ahaoboy/aarch64-linux-musl-cross-build@v1
         if: startsWith(matrix.platform.target, 'aarch64')
       - uses: actions/setup-python@v5
