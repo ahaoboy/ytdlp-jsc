@@ -37,7 +37,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install build-essential clang libclang-dev gcc-multilib  -y
-      - uses: ahaoboy/aarch64-linux-musl-cross-build@V1
+      - uses: ahaoboy/aarch64-linux-musl-cross-build@v1
         if: startsWith(matrix.platform.target, 'aarch64')
 
       - uses: actions/setup-python@v5
@@ -75,7 +75,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install build-essential clang libclang-dev gcc-multilib -y
-      - uses: ahaoboy/aarch64-linux-musl-cross-build@V1
+      - uses: ahaoboy/aarch64-linux-musl-cross-build@v1
         if: startsWith(matrix.platform.target, 'aarch64')
       - uses: actions/setup-python@v5
         with:
