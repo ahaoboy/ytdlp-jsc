@@ -1,0 +1,16 @@
+[package]
+name = "ytdlp-jsc"
+version = "0.1.0"
+edition = "2024"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "ytdlp_jsc"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = "0.27.0"
+ejs = { version = "0.1", git = "https://github.com/ahaoboy/ytdlp-ejs", default-features = false, features = [
+  "qjs",
+] }
+serde_json = "1"
