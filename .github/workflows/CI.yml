@@ -26,8 +26,8 @@ jobs:
         platform:
           - runner: ubuntu-latest
             target: x86_64
-          - runner: ubuntu-latest
-            target: x86
+          # - runner: ubuntu-latest
+          #   target: x86
           - runner: ubuntu-latest
             target: aarch64
     steps:
@@ -36,7 +36,7 @@ jobs:
       - name: install
         run: |
           sudo apt update
-          sudo apt install build-essential clang libclang-dev -y
+          sudo apt install build-essential clang libclang-dev gcc-multilib -y
 
       - uses: actions/setup-python@v5
         with:
@@ -62,8 +62,8 @@ jobs:
         platform:
           - runner: ubuntu-latest
             target: x86_64
-          - runner: ubuntu-latest
-            target: x86
+          # - runner: ubuntu-latest
+          #   target: x86
           - runner: ubuntu-latest
             target: aarch64
     steps:
@@ -72,7 +72,7 @@ jobs:
       - name: install
         run: |
           sudo apt update
-          sudo apt install build-essential clang libclang-dev -y
+          sudo apt install build-essential clang libclang-dev gcc-multilib -y
 
       - uses: actions/setup-python@v5
         with:
