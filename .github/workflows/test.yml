@@ -43,8 +43,10 @@ jobs:
           python3 -m venv venv
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             VENV_BIN="venv/Scripts"
+            PLUGIN_DIR="$APPDATA/yt-dlp/plugins"
           else
             VENV_BIN="venv/bin"
+            PLUGIN_DIR="$HOME/.yt-dlp/plugins"
           fi
           source $VENV_BIN/activate
 
@@ -57,7 +59,6 @@ jobs:
           maturin develop
 
           WHEELS_DIR="target/wheels"
-          PLUGIN_DIR="$HOME/.yt-dlp/plugins"
           mkdir -p "$PLUGIN_DIR"
           WHL_FILE=$(find "$WHEELS_DIR" -name "*.whl" -type f | head -n 1)
           if [[ -z "$WHL_FILE" ]]; then
@@ -69,6 +70,8 @@ jobs:
 
           # pip install "$WHL_FILE" --target "$PLUGIN_DIR" --force-reinstall --no-deps
           pipx inject yt-dlp "$WHL_FILE"
+          pip install ytdlp-jsc --no-index --find-links=./target/wheels/
+          pip install ytdlp-jsc --no-index --find-links=./target/wheels/ --target=$PLUGIN_DIR
 
           yt-dlp -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
           yt-dlp -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
