@@ -11,3 +11,10 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
+
+[project.scripts]
+ytdlp-jsc = "ytdlp_jsc.cli:main"
+
+[tool.maturin]
+python-source = "python"
+module-name = "ytdlp_jsc.ytdlp_jsc"
