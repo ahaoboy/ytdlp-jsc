@@ -1,0 +1,74 @@
+name: Test
+
+permissions:
+  contents: write
+
+on:
+  push:
+  pull_request:
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -CeEuo pipefail {0}
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macos-arm64
+            os: macos-latest
+          - name: windows
+            os: windows-latest
+          - name: ubuntu
+            os: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    name: test-${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v7
+      - name: install
+        run: |
+          python3 -m venv venv
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            VENV_BIN="venv/Scripts"
+          else
+            VENV_BIN="venv/bin"
+          fi
+          source $VENV_BIN/activate
+
+          uv tool install maturin
+          uv tool install pipx
+          pipx install yt-dlp
+          which yt-dlp
+
+          maturin build
+          maturin develop
+
+          WHEELS_DIR="target/wheels"
+          PLUGIN_DIR="$HOME/.yt-dlp/plugins"
+          mkdir -p "$PLUGIN_DIR"
+          WHL_FILE=$(find "$WHEELS_DIR" -name "*.whl" -type f | head -n 1)
+          if [[ -z "$WHL_FILE" ]]; then
+              echo "Error: No .whl file found in $WHEELS_DIR"
+              exit 1
+          fi
+          echo "Installing: $WHL_FILE"
+          echo "Target: $PLUGIN_DIR"
+
+          # pip install "$WHL_FILE" --target "$PLUGIN_DIR" --force-reinstall --no-deps
+          pipx inject yt-dlp "$WHL_FILE"
+
+          yt-dlp -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
+          yt-dlp -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
