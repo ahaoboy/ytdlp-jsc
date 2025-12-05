@@ -100,7 +100,7 @@ jobs:
           cp -rf dist/cli/_internal ~/.ei/_internal
       - name: test
         run: |
-          cat <<'EOF' > cookie.txt
+          cat <<'EOF' > cookies.txt
           ${{ secrets.YT_COOKIE }}
           EOF
           yt-dlp --cookies cookies.txt -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
