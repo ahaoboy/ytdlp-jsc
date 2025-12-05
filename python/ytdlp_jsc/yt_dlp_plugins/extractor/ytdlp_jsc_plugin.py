@@ -23,6 +23,19 @@ except ImportError:
     _HAS_YTDLP_JSC = False
     _solve = None
 
+try:
+    from ytdlp_jsc import solve as _solve
+    _HAS_YTDLP_JSC = True
+except ImportError:
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parents[2]))
+    try:
+        from ytdlp_jsc import solve as _solve
+        _HAS_YTDLP_JSC = True
+    except ImportError:
+        _HAS_YTDLP_JSC = False
+        _solve = None
 
 @register_provider
 class YtdlpJscJCP(JsChallengeProvider, BuiltinIEContentProvider):
