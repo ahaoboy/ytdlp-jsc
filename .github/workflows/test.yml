@@ -49,6 +49,7 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
+      # - uses: browser-actions/setup-chrome@v2
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v7
       - name: install
@@ -89,7 +90,7 @@ jobs:
           pipx inject yt-dlp "$WHL_FILE"
           pipx install "$WHL_FILE"
           # pip install ytdlp-jsc --no-index --find-links=./target/wheels/
-          # pip install ytdlp-jsc --no-index --find-links=./target/wheels/ --target=$PLUGIN_DIR
+          pip install ytdlp-jsc --no-index --find-links=./target/wheels/ --target=$PLUGIN_DIR
           pip install ytdlp-jsc --no-index --find-links=./target/wheels/ --target=./whl
 
           pyinstaller whl/ytdlp_jsc/cli.py --onedir --collect-all ytdlp_jsc
@@ -99,8 +100,31 @@ jobs:
           cp -rf dist/cli/cli ~/.ei/ytdlp-jsc-cli
           cp -rf dist/cli/_internal ~/.ei/_internal
 
-          yt-dlp -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
-          yt-dlp -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
+      - name: Check IP
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt update -y
+          curl https://ifconfig.me
+
+      - name: Set up WARP
+        uses: fscarmen/warp-on-actions@v1.4
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        with:
+          stack: dual # Optional. Support [ ipv4, ipv6, dual ]. Default is dual.
+          mode: client # Optional. Support [ wireguard, client ]. Default is wireguard.
+      - name: Check IP
+        run: curl https://ifconfig.me
+
+      - name: test
+        env:
+          YT_COOKIE: ${{ secrets.YT_COOKIE }}
+        run: |
+          echo "$YT_COOKIE" > cookies.txt
+          ls -lh cookies.txt
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+          # --user-agent "$UA"
+          yt-dlp --cookies cookies.txt -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
+          yt-dlp --cookies cookies.txt -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
       - name: install hyperfine
         run: |
           ei https://github.com/sharkdp/hyperfine
@@ -135,4 +159,3 @@ jobs:
               "ytdlp-jsc $PLAYER_JS $ARG" \
               "ytdlp-jsc-cli $PLAYER_JS $ARG" \
               "ejs --runtime qjs $PLAYER_JS $ARG"
-

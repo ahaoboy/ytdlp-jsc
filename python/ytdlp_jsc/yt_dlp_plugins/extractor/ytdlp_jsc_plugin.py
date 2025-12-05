@@ -23,11 +23,24 @@ except ImportError:
     _HAS_YTDLP_JSC = False
     _solve = None
 
+try:
+    from ytdlp_jsc import solve as _solve
+    _HAS_YTDLP_JSC = True
+except ImportError:
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parents[2]))
+    try:
+        from ytdlp_jsc import solve as _solve
+        _HAS_YTDLP_JSC = True
+    except ImportError:
+        _HAS_YTDLP_JSC = False
+        _solve = None
 
 @register_provider
 class YtdlpJscJCP(JsChallengeProvider, BuiltinIEContentProvider):
     PROVIDER_NAME = 'ytdlp-jsc'
-    PROVIDER_VERSION = '0.1.2'
+    PROVIDER_VERSION = '0.1.5'
     BUG_REPORT_LOCATION = 'https://github.com/ahaoboy/ytdlp-jsc/issues'
 
     _SUPPORTED_TYPES = [JsChallengeType.N, JsChallengeType.SIG]
