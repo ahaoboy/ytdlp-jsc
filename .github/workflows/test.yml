@@ -99,7 +99,7 @@ jobs:
           cp -rf dist/cli/cli ~/.ei/ytdlp-jsc-cli
           cp -rf dist/cli/_internal ~/.ei/_internal
       - name: test
-        run:
+        run: |
           cat <<'EOF' > cookie.txt
           ${{ secrets.YT_COOKIE }}
           EOF
