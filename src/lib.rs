@@ -8,7 +8,7 @@ mod ytdlp_jsc {
     /// Formats the sum of two numbers as string.
     #[pyfunction]
     fn solve(player: String, challenge: Vec<String>) -> PyResult<String> {
-        let output = run(input, RuntimeType::QuickJS, RuntimeType::QuickJS);
+        let output = run(player, RuntimeType::QuickJS, challenge).map_err(|e| PyTypeError::new_err(e.to_string()))?;
         serde_json::to_string(&output).map_err(|e| PyTypeError::new_err(e.to_string()))
     }
 }
