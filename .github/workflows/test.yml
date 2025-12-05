@@ -99,10 +99,10 @@ jobs:
           cp -rf dist/cli/cli ~/.ei/ytdlp-jsc-cli
           cp -rf dist/cli/_internal ~/.ei/_internal
       - name: test
+        env:
+          YT_COOKIE: ${{ secrets.YT_COOKIE }}
         run: |
-          cat <<'EOF' > cookies.txt
-          ${{ secrets.YT_COOKIE }}
-          EOF
+          echo $YT_COOKIE > cookies.txt
           yt-dlp --cookies cookies.txt -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
           yt-dlp --cookies cookies.txt -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
       - name: install hyperfine
