@@ -118,10 +118,10 @@ jobs:
           PLAYER_JS="ejs/players/3d3ba064-main"
           ARG="n:ZdZIqFPQK-Ty8wId"
 
-          deno --allow-read=. $RUN_JS $PLAYER_JS $ARG"
-          bun $RUN_JS $PLAYER_JS $ARG"
-          node $RUN_JS $PLAYER_JS $ARG"
-          ytdlp-jsc $PLAYER_JS $ARG"
+          deno --allow-read=. $RUN_JS $PLAYER_JS $ARG
+          bun $RUN_JS $PLAYER_JS $ARG
+          node $RUN_JS $PLAYER_JS $ARG
+          ytdlp-jsc $PLAYER_JS $ARG
           ytdlp-jsc-cli $PLAYER_JS $ARG
 
           hyperfine \
