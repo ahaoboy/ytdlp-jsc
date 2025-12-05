@@ -91,8 +91,8 @@ jobs:
           # pip install ytdlp-jsc --no-index --find-links=./target/wheels/
           # pip install ytdlp-jsc --no-index --find-links=./target/wheels/ --target=$PLUGIN_DIR
           pip install ytdlp-jsc --no-index --find-links=./target/wheels/ --target=./dist
-          pyinstaller cli.py --onefile  --collect-all ytdlp_jsc
-          cp dist/ytdlp_jsc/dist/cli ~/.ei/ytdlp-jsc-cli
+          pyinstaller dist/ytdlp_jsc/cli.py --onefile  --collect-all ytdlp_jsc
+          cp dist/cli ~/.ei/ytdlp-jsc-cli
 
           yt-dlp -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
           yt-dlp -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
