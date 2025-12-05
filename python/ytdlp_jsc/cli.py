@@ -58,7 +58,7 @@ def main():
             results.append(json.loads(result))
 
     # Output combined results
-    print(json.dumps(results))
+    print(json.dumps(results, separators=(',', ':')))
 
 
 if __name__ == "__main__":
