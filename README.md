@@ -6,6 +6,8 @@ YouTube player JavaScript challenge solver for yt-dlp n-parameter and signature 
 
 ```bash
 pip install ytdlp-jsc
+
+pip install ytdlp-jsc --target ~/.yt-dlp/plugins/
 ```
 
 Build from source (requires Rust toolchain):
