@@ -40,7 +40,7 @@ except ImportError:
 @register_provider
 class YtdlpJscJCP(JsChallengeProvider, BuiltinIEContentProvider):
     PROVIDER_NAME = 'ytdlp-jsc'
-    PROVIDER_VERSION = '0.1.2'
+    PROVIDER_VERSION = '0.1.5'
     BUG_REPORT_LOCATION = 'https://github.com/ahaoboy/ytdlp-jsc/issues'
 
     _SUPPORTED_TYPES = [JsChallengeType.N, JsChallengeType.SIG]

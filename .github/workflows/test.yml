@@ -102,7 +102,8 @@ jobs:
         env:
           YT_COOKIE: ${{ secrets.YT_COOKIE }}
         run: |
-          echo $YT_COOKIE > cookies.txt
+          echo $YT_COOKIE > cookies.
+          ls -lh cookies.txt
           yt-dlp --cookies cookies.txt -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
           yt-dlp --cookies cookies.txt -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
       - name: install hyperfine
