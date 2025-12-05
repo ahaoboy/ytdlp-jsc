@@ -30,6 +30,18 @@ jobs:
     name: test-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: latest
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
@@ -70,8 +82,21 @@ jobs:
 
           # pip install "$WHL_FILE" --target "$PLUGIN_DIR" --force-reinstall --no-deps
           pipx inject yt-dlp "$WHL_FILE"
-          pip install ytdlp-jsc --no-index --find-links=./target/wheels/
-          pip install ytdlp-jsc --no-index --find-links=./target/wheels/ --target=$PLUGIN_DIR
+          pipx install "$WHL_FILE"
+          # pip install ytdlp-jsc --no-index --find-links=./target/wheels/
+          # pip install ytdlp-jsc --no-index --find-links=./target/wheels/ --target=$PLUGIN_DIR
 
           yt-dlp -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
           yt-dlp -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
+      - name: bench
+        run: |
+          git clone https://github.com/yt-dlp/ejs
+          cd ejs
+          bun i
+          bun src/yt/solver/test/download.ts
+          cp -r src/yt/solver/test/players ./players
+          hyperfine \
+              "deno --allow-read=. run.js players/3d3ba064-main n:ZdZIqFPQK-Ty8wId" \
+              "bun run.js players/3d3ba064-main n:ZdZIqFPQK-Ty8wId" \
+              "node run.js players/3d3ba064-main n:ZdZIqFPQK-Ty8wId" \
+              "ytdlp-jsc players/3d3ba064-main n:ZdZIqFPQK-Ty8wId"

@@ -52,6 +52,20 @@ result = solve(player=player, challenge_type="n", challenge="ZdZIqFPQK-Ty8wId")
 print(result)
 ```
 
+## bench
+
+```bash
+hyperfine --shell fish --style=full \
+    "deno --allow-read=. run.js players/3d3ba064-main n:ZdZIqFPQK-Ty8wId" \
+    "bun run.js players/3d3ba064-main n:ZdZIqFPQK-Ty8wId" \
+    "node run.js players/3d3ba064-main n:ZdZIqFPQK-Ty8wId" \
+    "ytdlp-jsc players/3d3ba064-main n:ZdZIqFPQK-Ty8wId"
+```
+<div style="display: flex;">
+  <img src="./assets/bench.svg" alt="bench"/>
+</div>
+
+
 ## License
 
 MIT
