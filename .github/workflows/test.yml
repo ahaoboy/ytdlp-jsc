@@ -72,8 +72,8 @@ jobs:
           pipx install yt-dlp
           which yt-dlp
 
-          maturin build
-          maturin develop
+          maturin build --release
+          # maturin develop
 
           WHEELS_DIR="target/wheels"
           mkdir -p "$PLUGIN_DIR"
