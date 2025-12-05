@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Command line interface for ytdlp-jsc."""
 
-import json
 import sys
 from ytdlp_jsc import solve
 
@@ -20,23 +19,7 @@ def main():
         sys.exit(1)
 
     player_path = args[0]
-
-    # Parse requests
-    requests = {"n": [], "sig": []}
-
-    for request in args[1:]:
-        if ":" not in request:
-            print(f"ERROR: Invalid request format: {request}", file=sys.stderr)
-            print("Expected format: <type>:<challenge>", file=sys.stderr)
-            sys.exit(1)
-
-        req_type, challenge = request.split(":", 1)
-
-        if req_type not in ("n", "sig"):
-            print(f"ERROR: Unsupported request type: {req_type}", file=sys.stderr)
-            sys.exit(1)
-
-        requests[req_type].append(challenge)
+    challenges = args[1:]
 
     # Read player file
     try:
@@ -49,16 +32,9 @@ def main():
         print(f"ERROR: Failed to read player file: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # Process each request type and collect results
-    results = []
-
-    for challenge_type in ("n", "sig"):
-        for challenge in requests[challenge_type]:
-            result = solve(player=player, challenge_type=challenge_type, challenge=challenge)
-            results.append(json.loads(result))
-
-    # Output combined results
-    print(json.dumps(results, separators=(',', ':')))
+    # Call solve with player content and challenge list
+    result = solve(player, challenges)
+    print(result)
 
 
 if __name__ == "__main__":
