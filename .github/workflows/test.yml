@@ -95,7 +95,9 @@ jobs:
           pyinstaller whl/ytdlp_jsc/cli.py --onedir --collect-all ytdlp_jsc
           # pyinstaller dist/ytdlp_jsc/cli.py --onefile  --collect-all ytdlp_jsc
 
-          ln -sf dist/cli ~/.ei/ytdlp-jsc-cli
+          # ln -sf "$(pwd)/dist/cli/cli" ~/.ei/ytdlp-jsc-cli
+          cp -rf dist/cli/cli ~/.ei/ytdlp-jsc-cli
+          cp -rf dist/cli/_internal ~/.ei/_internal
 
           yt-dlp -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
           yt-dlp -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."

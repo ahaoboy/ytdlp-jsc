@@ -4,10 +4,7 @@ use pyo3::prelude::*;
 #[pymodule]
 mod ytdlp_jsc {
     use ejs::*;
-    use pyo3::{
-        exceptions::PyTypeError,
-        prelude::*,
-    };
+    use pyo3::{exceptions::PyTypeError, prelude::*};
     /// Formats the sum of two numbers as string.
     #[pyfunction]
     fn solve(player: String, challenge_type: String, challenge: String) -> PyResult<String> {
@@ -20,12 +17,24 @@ mod ytdlp_jsc {
                 ));
             }
         };
+
+        let other_type = match req_type {
+            RequestType::N => RequestType::Sig,
+            RequestType::Sig => RequestType::N,
+        };
+
         let input = Input::Player {
             player,
-            requests: vec![Request {
-                req_type,
-                challenges: vec![challenge],
-            }],
+            requests: vec![
+                Request {
+                    req_type,
+                    challenges: vec![challenge],
+                },
+                Request {
+                    req_type: other_type,
+                    challenges: vec![],
+                },
+            ],
             output_preprocessed: false,
         };
 
