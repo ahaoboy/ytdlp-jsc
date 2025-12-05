@@ -53,6 +53,8 @@ jobs:
         uses: astral-sh/setup-uv@v7
       - name: install
         run: |
+          curl -fsSL https://raw.githubusercontent.com/easy-install/easy-install/main/install.sh | sh
+
           python3 -m venv venv
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             VENV_BIN="venv/Scripts"
@@ -92,10 +94,14 @@ jobs:
       - name: bench
         run: |
           git clone https://github.com/yt-dlp/ejs
+          ei https://github.com/sharkdp/hyperfine
           cd ejs
           bun i
-          bun src/yt/solver/test/download.ts
-          cp -r src/yt/solver/test/players ./players
+          bun i esbuild -g
+          mkdir players
+          curl -o players/3d3ba064-main "https://www.youtube.com/s/player/3d3ba064/player_ias.vflset/en_US/base.js"
+          esbuild run.ts --bundle --platform=node --format=esm > run.js
+
           hyperfine \
               "deno --allow-read=. run.js players/3d3ba064-main n:ZdZIqFPQK-Ty8wId" \
               "bun run.js players/3d3ba064-main n:ZdZIqFPQK-Ty8wId" \
