@@ -49,7 +49,7 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
-      - uses: browser-actions/setup-chrome@v2
+      # - uses: browser-actions/setup-chrome@v2
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v7
       - name: install
@@ -103,11 +103,11 @@ jobs:
         env:
           YT_COOKIE: ${{ secrets.YT_COOKIE }}
         run: |
-          echo $YT_COOKIE > cookies.txt
+          echo "$YT_COOKIE" > cookies.txt
           ls -lh cookies.txt
-          head -n 4 README.md
-          yt-dlp --cookies-from-browser chrome -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
-          yt-dlp --cookies-from-browser chrome -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
+          head -c 150 cookies.txt
+          yt-dlp --cookies cookies.txt -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
+          yt-dlp --cookies cookies.txt -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
       - name: install hyperfine
         run: |
           ei https://github.com/sharkdp/hyperfine
