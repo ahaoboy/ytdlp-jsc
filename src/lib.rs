@@ -3,12 +3,45 @@ use pyo3::prelude::*;
 /// A Python module implemented in Rust.
 #[pymodule]
 mod ytdlp_jsc {
-    use ejs::{RuntimeType, run};
+    use ejs::{Output, Response, RuntimeType, run};
     use pyo3::{exceptions::PyTypeError, prelude::*};
-    /// Formats the sum of two numbers as string.
+
     #[pyfunction]
-    fn solve(player: String, challenge: Vec<String>) -> PyResult<String> {
-        let output = run(player, RuntimeType::QuickJS, challenge).map_err(|e| PyTypeError::new_err(e.to_string()))?;
+    fn solve_json(player: String, challenge: Vec<String>) -> PyResult<String> {
+        let output = run(player, RuntimeType::QuickJS, challenge)
+            .map_err(|e| PyTypeError::new_err(e.to_string()))?;
         serde_json::to_string(&output).map_err(|e| PyTypeError::new_err(e.to_string()))
+    }
+
+    #[pyfunction]
+    fn solve(player: String, challenges: Vec<String>) -> PyResult<Vec<String>> {
+        let output = run(player, RuntimeType::QuickJS, challenges.clone())
+            .map_err(|e| PyTypeError::new_err(e.to_string()))?;
+
+        match output {
+            Output::Result { responses, .. } => {
+                let mut results = Vec::with_capacity(challenges.len());
+
+                for (challenge, response) in challenges.iter().zip(responses.iter()) {
+                    match response {
+                        Response::Result { data } => {
+                            // Extract the original challenge value (without type prefix)
+                            let challenge_key = challenge
+                                .split_once(':')
+                                .map(|(_, c)| c)
+                                .unwrap_or(challenge);
+
+                            results.push(data.get(challenge_key).cloned().unwrap_or_default());
+                        }
+                        Response::Error { error } => {
+                            return Err(PyTypeError::new_err(error.clone()));
+                        }
+                    }
+                }
+
+                Ok(results)
+            }
+            Output::Error { error } => Err(PyTypeError::new_err(error)),
+        }
     }
 }

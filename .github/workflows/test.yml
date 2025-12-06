@@ -123,8 +123,8 @@ jobs:
           ls -lh cookies.txt
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
           # --user-agent "$UA"
-          yt-dlp --cookies cookies.txt -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
-          yt-dlp --cookies cookies.txt -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
+          yt-dlp --cookies cookies.txt --remote-components ytdlp-jsc,bun,node,deno -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" 2>&1 | grep -E "(jsc|Provider|challenge)" || echo "Command failed, continuing..."
+          yt-dlp --cookies cookies.txt --remote-components ytdlp-jsc,bun,node,deno -F "https://www.youtube.com/watch?v=E2Rj2gQAyPA" || echo "Command failed, continuing..."
       - name: install hyperfine
         run: |
           ei https://github.com/sharkdp/hyperfine

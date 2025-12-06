@@ -2,10 +2,22 @@
 """Command line interface for ytdlp-jsc."""
 
 import sys
-from ytdlp_jsc import solve
+try:
+    from ytdlp_jsc import solve_json
+except ImportError:
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parents[1]))
+    try:
+        from ytdlp_jsc import solve_json
+    except ImportError:
+        solve_json = None
 
 
 def main():
+    if solve_json is None:
+        print("ERROR: ytdlp_jsc module not found", file=sys.stderr)
+        sys.exit(1)
+
     args = sys.argv[1:]
 
     if len(args) < 2:
@@ -14,7 +26,7 @@ def main():
             f"usage: {sys.argv[0]} <player> [<type>:<request> ...]\n"
             f"  type: 'n' or 'sig'\n"
             f"example: ytdlp-jsc players/3d3ba064-phone n:ZdZIqFPQK-Ty8wId sig:xxxx",
-            file=sys.stderr
+            file=sys.stderr,
         )
         sys.exit(1)
 
@@ -33,8 +45,8 @@ def main():
         sys.exit(1)
 
     # Call solve with player content and challenge list
-    result = solve(player, challenges)
-    print(result)
+    results = solve_json(player, challenges)
+    print(results)
 
 
 if __name__ == "__main__":
