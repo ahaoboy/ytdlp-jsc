@@ -102,9 +102,7 @@ jobs:
 
       - name: Check IP
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: |
-          sudo apt update -y
-          curl https://ifconfig.me
+        run: curl https://ifconfig.me
 
       - name: Set up WARP
         uses: fscarmen/warp-on-actions@v1.4
