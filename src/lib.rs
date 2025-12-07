@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 /// A Python module implemented in Rust.
 #[pymodule]
 mod ytdlp_jsc {
-    use ejs::{Output, Response, RuntimeType, run};
+    use ejs::{JsChallengeOutput, JsChallengeResponse, RuntimeType, run};
     use pyo3::{exceptions::PyTypeError, prelude::*};
 
     #[pyfunction]
@@ -19,12 +19,12 @@ mod ytdlp_jsc {
             .map_err(|e| PyTypeError::new_err(e.to_string()))?;
 
         match output {
-            Output::Result { responses, .. } => {
+            JsChallengeOutput::Result { responses, .. } => {
                 let mut results = Vec::with_capacity(challenges.len());
 
                 for (challenge, response) in challenges.iter().zip(responses.iter()) {
                     match response {
-                        Response::Result { data } => {
+                        JsChallengeResponse::Result { data } => {
                             // Extract the original challenge value (without type prefix)
                             let challenge_key = challenge
                                 .split_once(':')
@@ -33,7 +33,7 @@ mod ytdlp_jsc {
 
                             results.push(data.get(challenge_key).cloned().unwrap_or_default());
                         }
-                        Response::Error { error } => {
+                        JsChallengeResponse::Error { error } => {
                             return Err(PyTypeError::new_err(error.clone()));
                         }
                     }
@@ -41,7 +41,7 @@ mod ytdlp_jsc {
 
                 Ok(results)
             }
-            Output::Error { error } => Err(PyTypeError::new_err(error)),
+            JsChallengeOutput::Error { error } => Err(PyTypeError::new_err(error)),
         }
     }
 }
