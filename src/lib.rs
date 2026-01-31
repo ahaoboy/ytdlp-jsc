@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 /// A Python module implemented in Rust.
 #[pymodule]
 mod ytdlp_jsc {
-    use ejs::{JsChallengeOutput, JsChallengeResponse, RuntimeType, run};
+    use ytdlp_ejs::{JsChallengeOutput, JsChallengeResponse, RuntimeType, run};
     use pyo3::{exceptions::PyTypeError, prelude::*};
 
     #[pyfunction]
