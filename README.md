@@ -1,6 +1,6 @@
 # ytdlp-jsc
 
-YouTube player JavaScript challenge solver for yt-dlp n-parameter and signature decryption.
+YouTube player JavaScript challenge solver for yt-dlp n-parameter and signature decryption with [ytdlp-ejs](https://github.com/ahaoboy/ytdlp-ejs).
 
 ## Installation
 
