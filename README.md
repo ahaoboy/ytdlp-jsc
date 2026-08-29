@@ -5,9 +5,11 @@ YouTube player JavaScript challenge solver for yt-dlp n-parameter and signature 
 ## Installation
 
 ```bash
-pip install ytdlp-jsc
+pip install yt-dlp
 
 pip install ytdlp-jsc --target ~/.yt-dlp/plugins/
+
+yt-dlp -v --extractor-args "youtube:jsc_trace=true" -F "https://www.youtube.com/watch?v=BnnbP7pCIvQ"
 ```
 
 > **Note on plugin installation**: When installed with `--target ~/.yt-dlp/plugins/`, the package is placed into the yt-dlp plugin directory with the following structure:
